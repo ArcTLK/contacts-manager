@@ -3,6 +3,8 @@
 
 char* serialize(contact *contacts) {
     static char output[1000];
+    //reset
+    output[0] = '\0';
     int i;
     int size = 1 + sizeof(contacts) / sizeof(contact);
     for (i = 0; i < size; ++i) {
@@ -54,8 +56,8 @@ contact* unserialize(char *input) {
                 contactsIndex++;
             }
             //reset strings
-            element[0] = '\0';
-            elementContent[0] = '\0';
+            memset(element, 0, sizeof(element));
+            memset(elementContent, 0, sizeof(elementContent));
             elementIndex = 0;
             elementContentIndex = 0;
         }

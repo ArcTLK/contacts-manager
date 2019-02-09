@@ -2,6 +2,7 @@
 #define _manager_h
 
 void createContact();
+void searchContact();
 
 typedef struct {
     char name[51];

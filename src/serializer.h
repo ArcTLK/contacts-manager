@@ -2,7 +2,7 @@
 #define _serializer_h
 #include "manager.h"
 
-char* serialize(contact*);
-contact* unserialize(char*);
+void serialize(contact*, char*, int*);
+int unserialize(char*, contact*);
 
 #endif

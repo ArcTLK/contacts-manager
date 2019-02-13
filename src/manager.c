@@ -3,30 +3,35 @@
 #include "manager.h"
 #include "serializer.h"
 
-static const char DIR[] = "/storage/emulated/0/CppDroid/contacts.xml";
+static const char DIR[] = "contacts.txt";
 
-void createContact() {
+void createContact(char *name, char *number) {
     contact newContact[1];
     FILE *file;
-    puts("Enter name (max length 50):\t");
-    fgets(newContact[0].name, 51, stdin);
-    //remove newline character
-    newContact[0].name[strlen(newContact[0].name) - 1] = '\0';
-    puts("Enter number:\t");
-    fgets(newContact[0].number, 15, stdin);
-    newContact[0].number[strlen(newContact[0].number) - 1] = '\0';
+    char XML[200];
+    //map strings to contact members
+    strcpy(newContact[0].name, name);
+    strcpy(newContact[0].number, number);
+    //serialize
+    serialize(newContact, XML, 1);
+    //append to file
     file = fopen(DIR, "a");
-    fputs(serialize(newContact), file);
+    fputs(XML, file);
     fclose(file);
 }
 
 void searchContact() {
-    char contactsXML[1000] = "";
+    char contactsXML[1000];
+    char test[1000] = "";
     FILE *file;
-    contact *contacts;
+    contact contacts[100];
+    int numOfContacts;
     file = fopen(DIR, "r");
     fgets(contactsXML, 1000, file);
     fclose(file);
-    contacts = unserialize(contactsXML);
-    puts(serialize(contacts));
+    puts(contactsXML);
+    numOfContacts = unserialize(contactsXML, contacts);
+    //test
+    serialize(contacts, test, &numOfContacts); //good this works now
+    puts(test);
 }

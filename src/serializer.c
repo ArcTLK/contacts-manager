@@ -1,13 +1,10 @@
 #include "serializer.h"
 #include <string.h>
+#include <stdio.h>
 
-char* serialize(contact *contacts) {
-    static char output[1000];
-    //reset
-    output[0] = '\0';
+void serialize(contact *contacts, char *output, int *numOfContacts) {
     int i;
-    int size = 1 + sizeof(contacts) / sizeof(contact);
-    for (i = 0; i < size; ++i) {
+    for (i = 0; i < *numOfContacts; ++i) {
         strcat(output, "<name>");
         strcat(output, contacts[i].name);
         strcat(output, "</name>");
@@ -15,11 +12,9 @@ char* serialize(contact *contacts) {
         strcat(output, contacts[i].number);
         strcat(output, "</number>");
     }
-    return output;
 }
 
-contact* unserialize(char *input) {
-    static contact contacts[100];
+int unserialize(char *input, contact* contacts) {
     int contactsIndex = 0;
     int readElementHead = 0;
     int readElementContent = 0;
@@ -28,7 +23,6 @@ contact* unserialize(char *input) {
     int elementIndex = 0;
     int elementContentIndex = 0;
     size_t i;
-    int j;
     for (i = 0; i < strlen(input); ++i) {
         if (input[i] == '<' && !readElementContent) {
             readElementHead = 1;
@@ -45,15 +39,10 @@ contact* unserialize(char *input) {
         }
         else if (input[i] == '>' && !readElementHead) {
             if (strcmp(element, "name") == 0) {
-                for (j = 0; j <= elementContentIndex; ++j) {
-                    contacts[contactsIndex].name[j] = elementContent[j];
-                }
+                strcpy(contacts[contactsIndex].name, elementContent);
             }
             else if (strcmp(element, "number") == 0) {
-                for (j = 0; j <= elementContentIndex; ++j) {
-                    contacts[contactsIndex].number[j] = elementContent[j];
-                }
-                contactsIndex++;
+                strcpy(contacts[contactsIndex++].number, elementContent);
             }
             //reset strings
             memset(element, 0, sizeof(element));
@@ -68,5 +57,6 @@ contact* unserialize(char *input) {
             elementContent[elementContentIndex++] = input[i];
         }
     }
-    return contacts;
+    //returning number of contacts
+    return contactsIndex;
 }

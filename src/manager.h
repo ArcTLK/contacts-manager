@@ -1,7 +1,7 @@
 #ifndef _manager_h
 #define _manager_h
 
-void createContact();
+void createContact(char*, char*);
 void searchContact();
 
 typedef struct {

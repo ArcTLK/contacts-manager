@@ -2,11 +2,11 @@
 #define _manager_h
 
 void createContact(char*, char*);
-void searchContact();
+void searchContact(char*, char*);
 
 typedef struct {
-    char name[51];
-    char number[11];
+    char name[50];
+    char number[10];
 } contact;
 
 #endif

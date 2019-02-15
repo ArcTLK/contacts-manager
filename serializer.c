@@ -1,10 +1,9 @@
-#include "serializer.h"
 #include <string.h>
-#include <stdio.h>
+#include "serializer.h"
 
-void serialize(contact *contacts, char *output, int *numOfContacts) {
+void serialize(contact *contacts, char *output, int numOfContacts) {
     int i;
-    for (i = 0; i < *numOfContacts; ++i) {
+    for (i = 0; i < numOfContacts; ++i) {
         strcat(output, "<name>");
         strcat(output, contacts[i].name);
         strcat(output, "</name>");
@@ -18,8 +17,8 @@ int unserialize(char *input, contact* contacts) {
     int contactsIndex = 0;
     int readElementHead = 0;
     int readElementContent = 0;
-    char element[50];
-    char elementContent[100];
+    char element[50] = "";
+    char elementContent[100] = "";
     int elementIndex = 0;
     int elementContentIndex = 0;
     size_t i;

@@ -34,6 +34,14 @@
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="manager.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="manager.h" />
+		<Unit filename="serializer.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="serializer.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

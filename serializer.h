@@ -1,5 +1,5 @@
-#ifndef _serializer_h
-#define _serializer_h
+#ifndef SERIALIZER_H_INCLUDED
+#define SERIALIZER_H_INCLUDED
 #include "manager.h"
 
 void serialize(contact*, char*, int);

@@ -44,8 +44,8 @@ int unserialize(char *input, contact* contacts) {
                 strcpy(contacts[contactsIndex++].number, elementContent);
             }
             //reset strings
-            memset(element, 0, sizeof(element));
-            memset(elementContent, 0, sizeof(elementContent));
+            memset(element, 0, sizeof element);
+            memset(elementContent, 0, sizeof elementContent);
             elementIndex = 0;
             elementContentIndex = 0;
         }

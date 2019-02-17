@@ -1,0 +1,7 @@
+#ifndef RESOURCE_H_INCLUDED
+#define RESOURCE_H_INCLUDED
+
+#define IDC_STATIC (-1)
+#define DLG_MAIN 100
+
+#endif // RESOURCE_H_INCLUDED

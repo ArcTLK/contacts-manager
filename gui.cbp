@@ -44,6 +44,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="manager.h" />
+		<Unit filename="resource.h" />
+		<Unit filename="resource.rc">
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Unit filename="serializer.c">
 			<Option compilerVar="CC" />
 		</Unit>

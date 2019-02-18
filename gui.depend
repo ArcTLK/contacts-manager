@@ -1,8 +1,6 @@
 # depslib dependency file v1.0
-1550401170 source:d:\contacts-manager\gui.c
+1550508748 source:d:\contacts-manager\gui.c
 	<windows.h>
-	<commctrl.h>
-	<stdio.h>
 	"resource.h"
 
 1550325997 source:d:\contacts-manager\manager.c
@@ -21,9 +19,11 @@
 	<string.h>
 	"serializer.h"
 
-1550400663 source:d:\contacts-manager\resource.rc
+1550508486 source:d:\contacts-manager\resource.rc
 	<windows.h>
+	<commctrl.h>
+	<richedit.h>
 	"resource.h"
 
-1550400726 d:\contacts-manager\resource.h
+1550508486 d:\contacts-manager\resource.h
 

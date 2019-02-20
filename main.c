@@ -27,7 +27,7 @@ int main() {
     while(1) { //loop till user breaks
         //get mode from user
         printf("Enter mode:\t");
-        mode = getchar();
+        mode = (char)getchar();
         if (mode == '\n') { //handling "no input"
             mode = '0';
             continue;

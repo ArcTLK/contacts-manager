@@ -47,8 +47,8 @@ void searchContact(char *name, char *output) {
     while(fgets(temp, sizeof temp, file)) {
         strcat(XML, temp);
         //increase size
-        XML = realloc(XML, sizeof temp * ++i);
-        contacts = realloc(contacts, sizeof temp * i / 10);
+        XML = (char*)realloc(XML, sizeof temp * ++i);
+        contacts = (contact*)realloc(contacts, sizeof temp * i / 10);
     }
     //convert XML to array of contacts
     numOfContacts = unserialize(XML, contacts);

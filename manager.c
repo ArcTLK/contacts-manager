@@ -137,7 +137,7 @@ int deleteContact(unsigned int *index) {
     //allocate space
     XML = (char *)calloc((sizeof(contact) + XML_TAG_SUM) * numOfContacts, sizeof(char));
     //delete
-    for(i = *index - 1; i < numOfContacts - 1; i++) {
+    for(i = *index; i < numOfContacts - 1; i++) {
         contacts[i] = contacts[i + 1];
     }
     

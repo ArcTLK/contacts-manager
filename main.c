@@ -51,8 +51,8 @@ int main() {
             if ((c = strchr(input1, '\n')) != NULL) *c = '\0';
             if ((c = strchr(input2, '\n')) != NULL) *c = '\0';
             //create contact
-            createContact(input1, input2);
-            puts("Contact created!\n");
+            if(createContact(input1, input2)) puts("Contact created!\n");
+            else puts("Invalid number!\n");
             //clean
             memset(input1, 0, sizeof input1);
             memset(input2, 0, sizeof input2);

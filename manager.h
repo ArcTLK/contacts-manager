@@ -11,7 +11,7 @@ typedef struct {
     char number[NUMBER_SIZE];
 } contact;
 
-void createContact(char*, char*);
+int createContact(char*, char*);
 void searchContact(char*, char**);
 int editContact(unsigned int*, int*, char*);
 int deleteContact(unsigned int*);

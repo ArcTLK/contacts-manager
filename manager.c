@@ -38,10 +38,16 @@ unsigned int readFromFile(contact **contacts) {
     return numOfContacts;
 }
 
-void createContact(char *name, char *number) {
+int createContact(char *name, char *number) {
     contact newContact[1];
     FILE *file;
+    unsigned int i;
     char *XML = (char *)calloc(strlen(name) + strlen(number) + XML_TAG_SUM, sizeof(char));
+    //number validation
+    for (i = 0; i < strlen(number); i++) {
+        //not a number!
+        if (number[i] < '0' || number[i] > '9') return 0;
+    }
     //map strings to contact members
     strcpy(newContact[0].name, name);
     strcpy(newContact[0].number, number);
@@ -53,6 +59,7 @@ void createContact(char *name, char *number) {
     //clean
     free(XML);
     fclose(file);
+    return 1;
 }
 
 void searchContact(char *name, char **output) {

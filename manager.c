@@ -11,10 +11,10 @@ unsigned int readFromFile(contact **contacts) {
     FILE *file;
     unsigned int numOfContacts;
     unsigned int i;
-    
+
     //space allocation
     XML = (char*)calloc(sizeof temp, sizeof(char));
-    *contacts = (contact*)calloc((unsigned int)ceil((sizeof temp - XML_TAG_SUM) / sizeof(contact)), sizeof(contact));
+    *contacts = (contact*)calloc(sizeof temp / sizeof(contact), sizeof(contact));
 
     if (XML == NULL || *contacts == NULL) {
         printf("Error: Memory not allocated!");
@@ -28,7 +28,7 @@ unsigned int readFromFile(contact **contacts) {
         strcat(XML, temp);
         //increase size
         XML = (char*)realloc(XML, sizeof temp * ++i);
-        *contacts = (contact*)realloc(*contacts, (unsigned int)ceil((sizeof temp - XML_TAG_SUM) / sizeof(contact)) * i);
+        *contacts = (contact*)realloc(*contacts, sizeof temp * i);
     }
     //convert XML to array of contacts
     numOfContacts = unserialize(XML, *contacts);
@@ -147,7 +147,7 @@ int deleteContact(unsigned int *index) {
     for(i = *index; i < numOfContacts - 1; i++) {
         contacts[i] = contacts[i + 1];
     }
-    
+
     //write
     file = fopen(DIR, "w");
     serialize(contacts, XML, (int)numOfContacts - 1);

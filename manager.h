@@ -1,6 +1,6 @@
 #ifndef MANAGER_H_INCLUDED
 #define MANAGER_H_INCLUDED
-#define DIR "/storage/emulated/0/contacts.txt"
+#define DIR "./contacts.txt"
 #define BUFFER_SIZE 100
 #define NAME_SIZE 50
 #define NUMBER_SIZE 10

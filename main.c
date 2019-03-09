@@ -97,6 +97,7 @@ void displayList() {
     for(i = 0; i < numOfContacts; i++) {
         printf("Contact #%d\nName: %s\nNumber: %s\n\n", i + 1, contacts[i].name, contacts[i].number);
     }
+    free(contacts);
 }
 void deleteContactUI() {
     char input[50] = "";

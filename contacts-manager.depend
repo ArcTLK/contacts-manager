@@ -53,13 +53,13 @@
 	<string.h>
 	"manager.h"
 
-1550319525 source:d:\contacts-manager\main.c
+1552145137 source:d:\contacts-manager\main.c
 	<stdio.h>
 	<string.h>
 	<stdlib.h>
 	"manager.h"
 
-1550319760 d:\contacts-manager\manager.h
+1552144532 d:\contacts-manager\manager.h
 
 1550313100 source:d:\contacts-manager\serializer.c
 	<string.h>
@@ -68,10 +68,11 @@
 1550319774 d:\contacts-manager\serializer.h
 	"manager.h"
 
-1550325997 source:d:\contacts-manager\manager.c
+1552147645 source:d:\contacts-manager\manager.c
 	<stdio.h>
 	<string.h>
 	<stdlib.h>
+	<math.h>
 	"manager.h"
 	"serializer.h"
 

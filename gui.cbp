@@ -37,6 +37,10 @@
 			<Add library="kernel32" />
 			<Add library="comctl32" />
 		</Linker>
+		<Unit filename="gui-functions.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="gui-functions.h" />
 		<Unit filename="gui.c">
 			<Option compilerVar="CC" />
 		</Unit>

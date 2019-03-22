@@ -23,11 +23,12 @@ unsigned int readFromFile(contact **contacts) {
     XML[0] = '\0'; //set null terminating character
     file = fopen(DIR, "r");
     //transfer file content to variable
-    i = 1;
+    i = 2;
     while(fgets(temp, sizeof temp, file)) {
         strcat(XML, temp);
         //increase size
-        XML = (char*)realloc(XML, sizeof temp * ++i);
+        i += 2;
+        XML = (char*)realloc(XML, sizeof temp * i);
         *contacts = (contact*)realloc(*contacts, sizeof temp * i);
     }
     //convert XML to array of contacts

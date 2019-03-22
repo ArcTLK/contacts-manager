@@ -31,6 +31,9 @@ BOOL CALLBACK DlgMain(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
             switch(LOWORD(wParam)) {
                 case ID_ADD:
                     DialogBox(NULL, MAKEINTRESOURCE(IDD_DIALOG2), hwndDlg, (DLGPROC)DlgCreation);
+                    numOfContacts = readFromFile(&contacts);
+                    ListView_DeleteAllItems(GetDlgItem(hwndDlg, ID_CONTACT_LIST));
+                    InsertListViewItems(GetDlgItem(hwndDlg, ID_CONTACT_LIST), numOfContacts);
                     break;
                 case ID_SEARCH:
                     DialogBox(NULL, MAKEINTRESOURCE(IDD_DIALOG3), hwndDlg, (DLGPROC)DlgSearch);
@@ -95,16 +98,18 @@ BOOL CALLBACK DlgCreation(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
             if (nameLen > 0 && numLen > 0) {
                 char *name;
                 char *number;
+                int errorId;
                 name = (char*)GlobalAlloc(GPTR, nameLen + 1);
                 number = (char*)GlobalAlloc(GPTR, numLen + 1);
                 GetDlgItemText(hwndDlg, IDC_NAME, name, nameLen + 1);
                 GetDlgItemText(hwndDlg, IDC_NUMBER, number, numLen + 1);
                 //create contact
-                createContact(name, number);
-                MessageBox(hwndDlg, "A contact has been created!", "Success", NULL);
+                errorId = createContact(name, number);
+                if (errorId == 0) MessageBox(hwndDlg, "You must enter a numerical value in the number field!", "Error", NULL);
+                else MessageBox(hwndDlg, "A contact has been created!", "Success", NULL);
                 GlobalFree((HANDLE)name);
                 GlobalFree((HANDLE)number);
-                EndDialog(hwndDlg, 0);
+                if (errorId == 1) EndDialog(hwndDlg, 0);
             }
             else MessageBox(hwndDlg, "Please enter values in the fields!", "Error", NULL);
         }
@@ -135,13 +140,14 @@ BOOL CALLBACK DlgSearch(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
             int nameLen = GetWindowTextLength(GetDlgItem(hwndDlg, IDC_NAME));
             if (nameLen > 0) {
                 char *name;
-                char output[1000];
+                char *output;
                 name = (char*)GlobalAlloc(GPTR, nameLen + 1);
                 GetDlgItemText(hwndDlg, IDC_NAME, name, nameLen + 1);
                 //search
-                searchContact(name, output);
-                MessageBox(hwndDlg, output, "Success", NULL);
+                searchContact(name, &output);
+                MessageBox(hwndDlg, output, "Result", NULL);
                 GlobalFree((HANDLE)name);
+                free(output);
                 EndDialog(hwndDlg, 0);
             }
             else MessageBox(hwndDlg, "Please enter values in the fields!", "Error", NULL);

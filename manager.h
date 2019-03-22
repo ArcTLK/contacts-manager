@@ -13,7 +13,7 @@ typedef struct {
 
 int createContact(char*, char*);
 void searchContact(char*, char**);
-int editContact(unsigned int*, int*, char*);
+int editContact(unsigned int*, int, char*);
 int deleteContact(unsigned int*);
 
 unsigned int readFromFile(contact**);

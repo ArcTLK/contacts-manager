@@ -94,11 +94,12 @@ void searchContact(char *name, char **output) {
     }
 }
 //returns 1 for success, 0 for error
-int editContact(unsigned int *index, int *property, char *change) {
+int editContact(unsigned int *index, int property, char *change) {
     contact *contacts;
     unsigned int numOfContacts;
     FILE *file;
     char *XML;
+    unsigned int i;
     numOfContacts = readFromFile(&contacts);
     if (*index >= numOfContacts) {
         //illegal index!
@@ -106,13 +107,18 @@ int editContact(unsigned int *index, int *property, char *change) {
     }
     //allocate space
     XML = (char *)calloc((sizeof(contact) + XML_TAG_SUM) * numOfContacts, sizeof(char));
-    if (*property == 1) {
+    if (property == 1) {
         //clean old
         memset(contacts[*index].name, 0, sizeof contacts[*index].name);
         //copy
         strcpy(contacts[*index].name, change);
     }
-    else if (*property == 2) {
+    else if (property == 2) {
+        //number validation
+        for (i = 0; i < strlen(change); i++) {
+            //not a number!
+            if (change[i] < '0' || change[i] > '9') return 0;
+        }
         //clean old
         memset(contacts[*index].number, 0, sizeof contacts[*index].number);
         //copy

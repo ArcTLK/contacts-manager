@@ -132,7 +132,7 @@ void editContactUI() {
     fgets(input, sizeof input, stdin);
     //remove newline character
             if ((c = strchr(input, '\n')) != NULL) *c = '\0';
-    if (editContact(&index, &option, input)) {
+    if (editContact(&index, option, input)) {
         puts("Contact successfully edited!");
     }
     else puts("An error occured!");

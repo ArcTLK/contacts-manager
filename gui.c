@@ -1,5 +1,6 @@
 #include <windows.h>
 #include <string.h>
+#include <stdio.h>
 #include "resource.h"
 #include "gui-functions.h"
 #include "manager.h"
@@ -9,6 +10,7 @@ BOOL CALLBACK DlgCreation(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 BOOL CALLBACK DlgSearch(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 BOOL CALLBACK DlgDelete(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 BOOL CALLBACK DlgEdit(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
+BOOL CALLBACK DlgContact(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 //GLOBAL VARIABLES
 contact *contacts;
@@ -56,7 +58,7 @@ BOOL CALLBACK DlgMain(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                 case ID_ABOUT:
                     MessageBox(hwndDlg, "Contacts Manager is an application project written entirely in C by:\n"
                                "Aditya Sivaram Nair\nHarshvardhan Pandey\nManuj Narayana\nKirnesh\nAbin",
-                               "About...", NULL);
+                               "About...", 0);
                     break;
                 case ID_QUIT:
                     PostMessage(hwndDlg, WM_CLOSE, 0, 0);
@@ -85,6 +87,20 @@ BOOL CALLBACK DlgMain(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
                         default:
                             break;
+                    }
+                }
+                break;
+                case LVN_COLUMNCLICK: {
+                    LPNMLISTVIEW pnmv = (LPNMLISTVIEW)lParam;
+                    if (pnmv->iSubItem == 1) { //if column is name
+                        //Add sorting code
+                    }
+                }
+                break;
+                case NM_CLICK: {
+                    LPNMITEMACTIVATE lpnmitem = (LPNMITEMACTIVATE)lParam;
+                    if (lpnmitem->iItem != -1) { //check if click is on item
+                        DialogBoxParam(NULL, MAKEINTRESOURCE(IDD_DIALOG6), hwndDlg, (DLGPROC)DlgContact, lpnmitem->iItem);
                     }
                 }
                 break;
@@ -120,13 +136,13 @@ BOOL CALLBACK DlgCreation(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
                 GetDlgItemText(hwndDlg, IDC_NUMBER, number, numLen + 1);
                 //create contact
                 errorId = createContact(name, number);
-                if (errorId == 0) MessageBox(hwndDlg, "You must enter a numerical value in the number field!", "Error", NULL);
-                else MessageBox(hwndDlg, "A contact has been created!", "Success", NULL);
+                if (errorId == 0) MessageBox(hwndDlg, "You must enter a numerical value in the number field!", "Error", 0);
+                else MessageBox(hwndDlg, "A contact has been created!", "Success", 0);
                 GlobalFree((HANDLE)name);
                 GlobalFree((HANDLE)number);
                 if (errorId == 1) EndDialog(hwndDlg, 0);
             }
-            else MessageBox(hwndDlg, "Please enter values in the fields!", "Error", NULL);
+            else MessageBox(hwndDlg, "Please enter values in the fields!", "Error", 0);
         }
             break;
         case IDCANCEL:
@@ -160,12 +176,12 @@ BOOL CALLBACK DlgSearch(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                 GetDlgItemText(hwndDlg, IDC_NAME, name, nameLen + 1);
                 //search
                 searchContact(name, &output);
-                MessageBox(hwndDlg, output, "Result", NULL);
+                MessageBox(hwndDlg, output, "Result", 0);
                 GlobalFree((HANDLE)name);
                 free(output);
                 PostMessage(hwndDlg, WM_CLOSE, 0, 0);
             }
-            else MessageBox(hwndDlg, "Please enter values in the fields!", "Error", NULL);
+            else MessageBox(hwndDlg, "Please enter values in the fields!", "Error", 0);
         }
             break;
         case IDCANCEL:
@@ -201,13 +217,13 @@ BOOL CALLBACK DlgDelete(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                 id = (unsigned int)strtol(idStr, NULL, 10) - 1;
                 result = deleteContact(&id);
                 GlobalFree((HANDLE)idStr);
-                if (result == 0) MessageBox(hwndDlg, "Invalid ID!", "Error", NULL);
+                if (result == 0) MessageBox(hwndDlg, "Invalid ID!", "Error", 0);
                 else {
-                    MessageBox(hwndDlg, "Contact has been deleted!", "Success", NULL);
+                    MessageBox(hwndDlg, "Contact has been deleted!", "Success", 0);
                     PostMessage(hwndDlg, WM_CLOSE, 0, 0);
                 }
             }
-            else MessageBox(hwndDlg, "Please enter values in the fields!", "Error", NULL);
+            else MessageBox(hwndDlg, "Please enter values in the fields!", "Error", 0);
         }
             break;
         case IDCANCEL:
@@ -242,7 +258,7 @@ BOOL CALLBACK DlgEdit(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                 id = (unsigned int)strtol(idStr, NULL, 10) - 1;
                 GlobalFree((HANDLE)idStr);
                 numOfContacts = readFromFile(&contacts);
-                if (id >= numOfContacts) MessageBox(hwndDlg, "Invalid ID!", "Error", NULL);
+                if (id >= numOfContacts) MessageBox(hwndDlg, "Invalid ID!", "Error", 0);
                 else {
                     SetWindowText(GetDlgItem(hwndDlg, IDC_NAME), contacts[id].name);
                     SetWindowText(GetDlgItem(hwndDlg, IDC_NUM), contacts[id].number);
@@ -251,7 +267,7 @@ BOOL CALLBACK DlgEdit(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                     EnableWindow(GetDlgItem(hwndDlg, IDC_OK), TRUE);
                 }
             }
-            else MessageBox(hwndDlg, "Please enter values in the fields!", "Error", NULL);
+            else MessageBox(hwndDlg, "Please enter values in the fields!", "Error", 0);
         }
             break;
         case IDC_OK: {
@@ -271,7 +287,7 @@ BOOL CALLBACK DlgEdit(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                 id = (unsigned int)strtol(idStr, NULL, 10) - 1;
                 GlobalFree((HANDLE)idStr);
                 numOfContacts = readFromFile(&contacts);
-                if (id >= numOfContacts) MessageBox(hwndDlg, "Invalid ID!", "Error", NULL);
+                if (id >= numOfContacts) MessageBox(hwndDlg, "Invalid ID!", "Error", 0);
                 else {
                     if (strcmp(name, contacts[id].name) != 0) {
                         result = editContact(&id, 1, name);
@@ -283,21 +299,53 @@ BOOL CALLBACK DlgEdit(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                     }
                     GlobalFree((HANDLE)name);
                     GlobalFree((HANDLE)number);
-                    if (!change) MessageBox(hwndDlg, "No changes done!", "Error", NULL);
-                    else if (result == 0) MessageBox(hwndDlg, "Invalid Input!", "Error", NULL);
+                    if (!change) MessageBox(hwndDlg, "No changes done!", "Error", 0);
+                    else if (result == 0) MessageBox(hwndDlg, "Invalid Input!", "Error", 0);
                     else {
-                        MessageBox(hwndDlg, "Contact has been edited successfully!", "Success", NULL);
+                        MessageBox(hwndDlg, "Contact has been edited successfully!", "Success", 0);
                         PostMessage(hwndDlg, WM_CLOSE, 0, 0);
                     }
                 }
             }
-            else MessageBox(hwndDlg, "Please enter values in the fields!", "Error", NULL);
+            else MessageBox(hwndDlg, "Please enter values in the fields!", "Error", 0);
         }
             break;
         case IDCANCEL:
             PostMessage(hwndDlg, WM_CLOSE, 0, 0);
             break;
         }
+    }
+    break;
+    default:
+        return FALSE;
+    }
+    return TRUE;
+}
+BOOL CALLBACK DlgContact(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    switch(uMsg) {
+    case WM_INITDIALOG: {
+        if (lParam >= 0) { //array index must not be negative!
+            SetWindowText(GetDlgItem(hwndDlg, IDS_NAME), contacts[lParam].name);
+            SetWindowText(GetDlgItem(hwndDlg, IDS_NUMBER), contacts[lParam].number);
+        }
+    }
+    break;
+    case WM_CLOSE: {
+        EndDialog(hwndDlg, 0);
+    }
+    break;
+    case WM_COMMAND: {
+        switch(LOWORD(wParam)) {
+        }
+    }
+    break;
+    case WM_NOTIFY: {
+            switch(((LPNMHDR) lParam)->code) {
+                case STN_DBLCLK: {
+                    MessageBox(hwndDlg, "T", "T", 0);
+                }
+                break;
+            }
     }
     break;
     default:

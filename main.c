@@ -19,7 +19,7 @@ int main() {
     //clean
     memset(input1, 0, sizeof input1);
     memset(input2, 0, sizeof input2);
-    puts("Contacts Manager(Prototype)\t~written by Arc");
+    puts("Contacts Manager");
     puts(
         "Modes:\n"
         "1: Create a Contact\n"

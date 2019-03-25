@@ -9,11 +9,12 @@
 #define IDR_MENU1                               104
 #define IDD_DIALOG4                             105
 #define IDD_DIALOG5                             106
+#define IDD_DIALOG6                             107
 #define IDC_LOAD                                40000
-#define IDOK                                    40000
 #define IDS_FIRSTCOLUMN                         40000
+#define IDS_NAME                                40000
 #define ID_ADD                                  40000
-#define IDCANCEL                                40001
+#define IDS_NUMBER                              40001
 #define IDS_SECONDCOLUMN                        40001
 #define ID_CONTACT_LIST                         40001
 #define ID_EDIT                                 40001

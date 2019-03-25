@@ -1,3 +1,4 @@
+#include <string.h>
 #include "gui-functions.h"
 #include "resource.h"
 // InsertListViewItems: Inserts items into a list view.
@@ -54,7 +55,7 @@ BOOL InitListViewColumns(HWND hWndListView)
     for (iCol = 0; iCol < 3; iCol++)
     {
         lvc.iSubItem = iCol;
-        lvc.pszText = szText;
+        lvc.pszText = (LPSTR)szText;
         // Width of column in pixels.
         if (iCol == 0) lvc.cx = 30;
         else lvc.cx = 150;
@@ -63,7 +64,7 @@ BOOL InitListViewColumns(HWND hWndListView)
         // Load the names of the column headings from the string resources.
         LoadString(NULL,
                    IDS_FIRSTCOLUMN + iCol,
-                   szText,
+                   (LPSTR)szText,
                    sizeof(szText)/sizeof(szText[0]));
 
         // Insert the columns into the list view.

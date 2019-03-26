@@ -24,13 +24,13 @@
 	<string.h>
 	"serializer.h"
 
-1553535015 source:d:\contacts-manager\resource.rc
+1553559650 source:d:\contacts-manager\resource.rc
 	<windows.h>
 	<commctrl.h>
 	<richedit.h>
 	"resource.h"
 
-1553535015 d:\contacts-manager\resource.h
+1553559650 d:\contacts-manager\resource.h
 
 1553532837 d:\contacts-manager\gui-functions.h
 	<windows.h>

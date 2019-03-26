@@ -20,10 +20,12 @@
 #define ID_EDIT                                 40001
 #define IDC_DELETE                              40002
 #define IDC_NAME                                40002
+#define IDC_PICTURE                             40002
 #define IDS_THIRDCOLUMN                         40002
 #define ID_DELETE                               40002
 #define IDC_ID                                  40003
 #define IDC_NUMBER                              40003
+#define IDC_PICTUREBUTTON                       40003
 #define ID_SEARCH                               40003
 #define IDC_OK                                  40004
 #define ID_QUIT                                 40004

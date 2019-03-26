@@ -336,17 +336,13 @@ BOOL CALLBACK DlgContact(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) 
     break;
     case WM_COMMAND: {
         switch(LOWORD(wParam)) {
+            case IDC_PICTUREBUTTON: {
+                MessageBox(hwndDlg, "Display file open dialog here", "Incomplete", 0);
+            }
+                break;
         }
     }
     break;
-    case WM_NOTIFY: {
-            switch(((LPNMHDR) lParam)->code) {
-                case STN_DBLCLK: {
-                    MessageBox(hwndDlg, "T", "T", 0);
-                }
-                break;
-            }
-    }
     break;
     default:
         return FALSE;

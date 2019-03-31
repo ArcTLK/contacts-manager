@@ -2,3 +2,8 @@
 /bin-gui/Debug
 /obj
 /obj-gui
+
+/contacts-manager.depend
+/contacts-manager.layout
+/gui.depend
+/gui.layout

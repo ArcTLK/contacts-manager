@@ -4,7 +4,7 @@
 #include <commctrl.h>
 #include "manager.h"
 
-BOOL InsertListViewItems(HWND hWndListView, int cItems);
+BOOL InsertListViewItems(HWND hWndListView, int cItems, int cSubItems);
 BOOL InitListViewColumns(HWND hWndListView);
 
 

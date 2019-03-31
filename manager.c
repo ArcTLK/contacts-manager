@@ -2,8 +2,26 @@
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
+#include <ctype.h>
 #include "manager.h"
 #include "serializer.h"
+
+int validateNumber(char *number) {
+    int numLen = strlen(number);
+    int i;
+    for (i = 0; i < numLen; i++) {
+        //not a number!
+        if (!isdigit(number[i])) return ERR_NAN;
+    }
+    //check if number < 10 or > 11
+    if (numLen < 10 || numLen > 11) return ERR_NUM_LENGTH_MISMATCH;
+    //check if number is unique
+    unsigned int contactsFound;
+    contact *foundContacts;
+    searchContact(number, 1, &foundContacts, &contactsFound);
+    if (contactsFound > 0) return ERR_DUPLICATE_CONTACT;
+    return 1; //no error
+}
 
 unsigned int readFromFile(contact **contacts) {
     char temp[BUFFER_SIZE] = "";
@@ -42,13 +60,9 @@ unsigned int readFromFile(contact **contacts) {
 int createContact(char *name, char *number) {
     contact newContact[1];
     FILE *file;
-    unsigned int i;
     char *XML = (char *)calloc(strlen(name) + strlen(number) + XML_TAG_SUM, sizeof(char));
-    //number validation
-    for (i = 0; i < strlen(number); i++) {
-        //not a number!
-        if (number[i] < '0' || number[i] > '9') return 0;
-    }
+    int errorId = validateNumber(number);
+    if (errorId != 1) return errorId;
     //map strings to contact members
     strcpy(newContact[0].name, name);
     strcpy(newContact[0].number, number);
@@ -62,36 +76,45 @@ int createContact(char *name, char *number) {
     fclose(file);
     return 1;
 }
-
-void searchContact(char *name, char **output) {
+int searchContact(char *search, int searchParam, contact **foundContacts, unsigned int *contactsFound) {
     contact *contacts;
     unsigned int numOfContacts;
-    unsigned int contactsFound = 0;
     unsigned int i;
+    *contactsFound = 0;
     //allocate space
-    *output = (char*)calloc(NUMBER_SIZE, sizeof(char));
-    if (*output == NULL) {
-        printf("Error: Memory not allocated!");
-        exit(EXIT_FAILURE);
-    }
-
-    strcat(*output, "Numbers:\n"); //heading
+    *foundContacts = (contact *)calloc(1, sizeof(contact));
     //get contacts
     numOfContacts = readFromFile(&contacts);
-    //loop through names
-    for (i = 0; i < numOfContacts; i++) {
-        if (strcmp(contacts[i].name, name) == 0) {
-            *output = (char*)realloc(*output, NUMBER_SIZE * (++contactsFound + 1));
-            strcat(*output, contacts[i].number);
-            strcat(*output, "\n");
+    if (searchParam == 0) {
+        //loop through names
+        for (i = 0; i < numOfContacts; i++) {
+            if (strcmp(contacts[i].name, search) == 0) {
+                //copy
+                strcpy((*foundContacts + *contactsFound)->name, contacts[i].name);
+                strcpy((*foundContacts + *contactsFound)->number, contacts[i].number);
+                (*contactsFound)++;
+                *foundContacts = (contact *)realloc(*foundContacts, (*contactsFound + 1) * sizeof(contact)); //increase size
+            }
         }
     }
+    else {
+        //loop through numbers
+        for (i = 0; i < numOfContacts; i++) {
+            if (strcmp(contacts[i].number, search) == 0) {
+                //copy
+                strcpy((*foundContacts + *contactsFound)->name, contacts[i].name);
+                strcpy((*foundContacts + *contactsFound)->number, contacts[i].number);
+                (*contactsFound)++;
+                *foundContacts = (contact *)realloc(*foundContacts, (*contactsFound + 1) * sizeof(contact)); //increase size
+            }
+        }
+    }
+
     //clean
     free(contacts);
-    //check if no contacts were found
-    if (strcmp(*output, "Numbers:\n") == 0) {
-        strcat(*output, "No contacts found!\n");
-    }
+    //check if no contacts found
+    if (*contactsFound == 0) return 0;
+    else return 1;
 }
 //returns 1 for success, 0 for error
 int editContact(unsigned int *index, int property, char *change) {
@@ -99,11 +122,10 @@ int editContact(unsigned int *index, int property, char *change) {
     unsigned int numOfContacts;
     FILE *file;
     char *XML;
-    unsigned int i;
     numOfContacts = readFromFile(&contacts);
     if (*index >= numOfContacts) {
         //illegal index!
-        return 0;
+        return ERR_INVALID_INDEX;
     }
     //allocate space
     XML = (char *)calloc((sizeof(contact) + XML_TAG_SUM) * numOfContacts, sizeof(char));
@@ -114,17 +136,14 @@ int editContact(unsigned int *index, int property, char *change) {
         strcpy(contacts[*index].name, change);
     }
     else if (property == 2) {
-        //number validation
-        for (i = 0; i < strlen(change); i++) {
-            //not a number!
-            if (change[i] < '0' || change[i] > '9') return 0;
-        }
+        int errorId = validateNumber(change);
+        if (errorId != 1) return errorId;
         //clean old
         memset(contacts[*index].number, 0, sizeof contacts[*index].number);
         //copy
         strcpy(contacts[*index].number, change);
     }
-    else return 0; //invalid property
+    else return ERR_INVALID_PROPERTY; //invalid property
     //write
     file = fopen(DIR, "w");
     serialize(contacts, XML, (int)numOfContacts);

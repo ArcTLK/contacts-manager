@@ -10,6 +10,7 @@
 #define IDD_DIALOG4                             105
 #define IDD_DIALOG5                             106
 #define IDD_DIALOG6                             107
+#define IDC_FOUND_CONTACTS                      40000
 #define IDC_LOAD                                40000
 #define IDS_FIRSTCOLUMN                         40000
 #define IDS_NAME                                40000

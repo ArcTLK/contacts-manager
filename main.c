@@ -3,22 +3,15 @@
 #include <stdlib.h>
 #include "manager.h"
 
-#define MAX_INPUT_LIMIT 100
-
 void displayList();
 void editContactUI();
 void deleteContactUI();
+void searchContactUI();
+void createContactUI();
 
 int main() {
     int i;
-    char *c;
     char mode = '0';
-    char input1[MAX_INPUT_LIMIT];
-    char input2[MAX_INPUT_LIMIT];
-    char *output;
-    //clean
-    memset(input1, 0, sizeof input1);
-    memset(input2, 0, sizeof input2);
     puts("Contacts Manager");
     puts(
         "Modes:\n"
@@ -40,47 +33,12 @@ int main() {
         else printf("\n");
         //clean input buffer
         while ((i = getchar()) != '\n' && i != EOF);
-        if (mode == '1') {
-            puts("Contact Creation");
-            //get user input
-            printf("Enter name:\t");
-            fgets(input1, sizeof input1, stdin);
-            printf("Enter number:\t");
-            fgets(input2, sizeof input2, stdin);
-            //remove newline character
-            if ((c = strchr(input1, '\n')) != NULL) *c = '\0';
-            if ((c = strchr(input2, '\n')) != NULL) *c = '\0';
-            //create contact
-            if(createContact(input1, input2)) puts("Contact created!\n");
-            else puts("Invalid number!\n");
-            //clean
-            memset(input1, 0, sizeof input1);
-            memset(input2, 0, sizeof input2);
-        }
-        else if (mode == '2') {
-            puts("Contact Search");
-            //get user input
-            printf("Enter the name of the person:\t");
-            fgets(input1, sizeof input1, stdin);
-            //remove newline character
-            if ((c = strchr(input1, '\n')) != NULL) *c = '\0';
-            //search contact
-            searchContact(input1, &output);
-            printf("\n");
-            puts(output); //output
-            //clean
-            memset(input1, 0, sizeof input1);
-            free(output);
-        }
-        else if (mode == '3') {
-            deleteContactUI();
-        }
-        else if (mode == '4') {
-            displayList();
-        }
-        else if (mode == '5') {
-            editContactUI();
-        }
+
+        if (mode == '1') createContactUI();
+        else if (mode == '2') searchContactUI();
+        else if (mode == '3') deleteContactUI();
+        else if (mode == '4') displayList();
+        else if (mode == '5') editContactUI();
         else if (mode == '0') break;
         else printf("Unknown mode. Try again\n");
     }
@@ -100,7 +58,7 @@ void displayList() {
     free(contacts);
 }
 void deleteContactUI() {
-    char input[50] = "";
+    char input[BUFFER_SIZE] = "";
     unsigned int index;
     puts("Deleting a Contact:\nSelect a contact from the contact list.");
     displayList();
@@ -112,10 +70,11 @@ void deleteContactUI() {
     else puts("An error occured!");
 }
 void editContactUI() {
-    char input[50] = "";
+    char input[BUFFER_SIZE] = "";
     unsigned int index;
     int option;
     char *c;
+    int errorId;
     puts("Editing a Contact:\nSelect a contact from the contact list.");
     displayList();
     fgets(input, sizeof input, stdin);
@@ -131,9 +90,60 @@ void editContactUI() {
     else if (option == 2) printf("Enter new number:\t");
     fgets(input, sizeof input, stdin);
     //remove newline character
-            if ((c = strchr(input, '\n')) != NULL) *c = '\0';
-    if (editContact(&index, option, input)) {
-        puts("Contact successfully edited!");
+    if ((c = strchr(input, '\n')) != NULL) *c = '\0';
+    errorId = editContact(&index, option, input);
+    if (errorId == ERR_NAN) puts("Number must be a numerical value!\n");
+    else if(errorId == ERR_NUM_LENGTH_MISMATCH) puts("Number must contain 10 or 11 digits!\n");
+    else if (errorId == ERR_DUPLICATE_CONTACT) puts("A contact with the same number is present in the list!\n");
+    else if (errorId == ERR_INVALID_PROPERTY) puts("Invalid property entered!\n");
+    else if (errorId == ERR_INVALID_INDEX) puts("Invalid contact selected!\n");
+    else puts("Contact has been edited!\n");
+}
+
+void searchContactUI() {
+    char name[NAME_SIZE] = "";
+    char *c;
+    contact *foundContacts;
+    unsigned int contactsFound;
+    int i;
+    puts("Contact Search");
+    //get user input
+    printf("Enter the name of the person:\t");
+    fgets(name, sizeof name, stdin);
+    //remove newline character
+    if ((c = strchr(name, '\n')) != NULL) *c = '\0';
+    //search contact
+    searchContact(name, 0, &foundContacts, &contactsFound);
+    if (contactsFound > 0) {
+        printf("Name: %s\nNumbers:\n", name);
+        for (i = 0; i < contactsFound; i++) {
+            printf("%s\n", foundContacts[i].number);
+        }
     }
-    else puts("An error occured!");
+    else printf("No contacts found!\n");
+    printf("\n");
+    //clean
+    free(foundContacts);
+}
+
+void createContactUI() {
+    char name[NAME_SIZE];
+    char number[NUMBER_SIZE];
+    int errorId;
+    char *c;
+    puts("Contact Creation");
+    //get user input
+    printf("Enter name:\t");
+    fgets(name, sizeof name, stdin);
+    printf("Enter number:\t");
+    fgets(number, sizeof number, stdin);
+    //remove newline character
+    if ((c = strchr(name, '\n')) != NULL) *c = '\0';
+    if ((c = strchr(number, '\n')) != NULL) *c = '\0';
+    //create contact
+    errorId = createContact(name, number);
+    if (errorId == ERR_NAN) puts("Number must be a numerical value!\n");
+    else if(errorId == ERR_NUM_LENGTH_MISMATCH) puts("Number must contain 10 or 11 digits!\n");
+    else if (errorId == ERR_DUPLICATE_CONTACT) puts("A contact with the same number is present in the list!\n");
+    else puts("Contact has been created!\n");
 }

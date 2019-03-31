@@ -23,10 +23,10 @@ IDR_MENU1 MENU
     }
     POPUP "Manage"
     {
-        MENUITEM "Add Contacts", ID_ADD
-        MENUITEM "Edit Contacts", ID_EDIT
-        MENUITEM "Delete Contacts", ID_DELETE
-        MENUITEM "Search Contacts", ID_SEARCH
+        MENUITEM "Create Contact", ID_ADD
+        MENUITEM "Edit Contact", ID_EDIT
+        MENUITEM "Delete Contact", ID_DELETE
+        MENUITEM "Search Contact", ID_SEARCH
     }
 }
 
@@ -66,15 +66,17 @@ FONT 8, "Ms Shell Dlg"
 
 
 LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
-IDD_DIALOG3 DIALOG 0, 0, 186, 66
+IDD_DIALOG3 DIALOG 0, 0, 140, 111
 STYLE DS_3DLOOK | DS_CENTER | DS_MODALFRAME | DS_SHELLFONT | WS_CAPTION | WS_VISIBLE | WS_POPUP | WS_SYSMENU
 CAPTION "Contact Search"
 FONT 8, "Ms Shell Dlg"
 {
-    EDITTEXT        IDC_NAME, 109, 10, 52, 16, ES_AUTOHSCROLL, WS_EX_LEFT
-    LTEXT           "Enter Name:", 0, 18, 13, 40, 9, SS_LEFT, WS_EX_LEFT
-    PUSHBUTTON      "Cancel", IDCANCEL, 109, 38, 50, 14, 0, WS_EX_LEFT
-    DEFPUSHBUTTON   "Search", IDOK, 18, 38, 45, 14, 0, WS_EX_LEFT
+    CONTROL         "", IDC_FOUND_CONTACTS, WC_LISTVIEW, WS_TABSTOP | WS_BORDER | LVS_NOLABELWRAP | LVS_ICON, 77, 18, 59, 87, WS_EX_LEFT
+    LTEXT           "Numbers:", 0, 78, 4, 31, 9, SS_LEFT, WS_EX_LEFT
+    EDITTEXT        IDC_NAME, 13, 20, 45, 14, ES_AUTOHSCROLL, WS_EX_LEFT
+    LTEXT           "Enter Name:", 0, 13, 6, 40, 9, SS_LEFT, WS_EX_LEFT
+    DEFPUSHBUTTON   "Search", IDOK, 14, 42, 45, 14, 0, WS_EX_LEFT
+    DEFPUSHBUTTON   "Cancel", IDCANCEL, 14, 60, 46, 14, 0, WS_EX_LEFT
 }
 
 

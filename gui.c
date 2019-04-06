@@ -59,7 +59,7 @@ BOOL CALLBACK DlgMain(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                     break;
                 case ID_ABOUT:
                     MessageBox(hwndDlg, "Contacts Manager is an application project written entirely in C by:\n"
-                               "Aditya Sivaram Nair\nHarshvardhan Pandey\nManuj Narayanaa\nKirnesh Walunj\nAbin Varghese",
+                               "Aditya Sivaram Nair\nHarshvardhan Pandey\nManuj Narayanaa Rajaram\nKirnesh Walunj\nAbin Varghese",
                                "About...", 0);
                     break;
                 case ID_QUIT:

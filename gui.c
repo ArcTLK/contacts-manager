@@ -163,6 +163,7 @@ BOOL CALLBACK DlgCreation(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 BOOL CALLBACK DlgSearch(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     static contact *foundContacts;
+    static unsigned int contactsFound = 0;
     switch(uMsg) {
     case WM_INITDIALOG: {
         InitListViewColumns(GetDlgItem(hwndDlg, IDC_FOUND_CONTACTS), 2, IDS_SECONDCOLUMN);
@@ -174,26 +175,66 @@ BOOL CALLBACK DlgSearch(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     break;
     case WM_COMMAND: {
         switch(LOWORD(wParam)) {
-        case IDOK: {
-            int nameLen = GetWindowTextLength(GetDlgItem(hwndDlg, IDC_NAME));
-            if (nameLen > 0) {
-                char *name;
-                unsigned int contactsFound;
-                name = (char*)GlobalAlloc(GPTR, nameLen + 1);
-                GetDlgItemText(hwndDlg, IDC_NAME, name, nameLen + 1);
-                //search
-                searchContact(name, 0, &foundContacts, &contactsFound);
-                ListView_DeleteAllItems(GetDlgItem(hwndDlg, IDC_FOUND_CONTACTS));
-                if (contactsFound > 0) {
-                    InsertListViewItems(GetDlgItem(hwndDlg, IDC_FOUND_CONTACTS), contactsFound, 1);
+            case IDC_SEARCH_INP: {
+                //check notification code
+                switch(HIWORD(wParam)) {
+                    case CBN_SETFOCUS: {
+                        SendDlgItemMessage(hwndDlg, IDC_SEARCH_INP, CB_SHOWDROPDOWN, (WPARAM)TRUE, (WPARAM)NULL);
+                    }
+                    break;
+                    case CBN_KILLFOCUS: {
+                        SendDlgItemMessage(hwndDlg, IDC_SEARCH_INP, CB_SHOWDROPDOWN, (WPARAM)FALSE, (WPARAM)NULL);
+                    }
+                    break;
+                    case CBN_SELCHANGE: {
+                        COMBOBOXINFO info = { sizeof(COMBOBOXINFO) };
+                        GetComboBoxInfo(GetDlgItem(hwndDlg, IDC_SEARCH_INP), &info);
+                        char *inputBuffer;
+                        int selectedIndex = SendDlgItemMessage(hwndDlg, IDC_SEARCH_INP, CB_GETCURSEL, (WPARAM)NULL, (LPARAM)NULL);
+                        if (selectedIndex != CB_ERR) {
+                            int inputLen = SendDlgItemMessage(hwndDlg, IDC_SEARCH_INP, CB_GETLBTEXTLEN, (WPARAM)selectedIndex, (LPARAM)NULL);
+                            inputBuffer = (char*)GlobalAlloc(GPTR, inputLen + 1);
+                            SendDlgItemMessage(hwndDlg, IDC_SEARCH_INP, CB_GETLBTEXT, (WPARAM)selectedIndex, (LPARAM)inputBuffer);
+                            searchContact(inputBuffer, 3, &foundContacts, &contactsFound);
+                            ListView_DeleteAllItems(GetDlgItem(hwndDlg, IDC_FOUND_CONTACTS));
+                            if (contactsFound > 0) {
+                                InsertListViewItems(GetDlgItem(hwndDlg, IDC_FOUND_CONTACTS), contactsFound, 1);
+                            }
+                            GlobalFree((HANDLE)inputBuffer);
+                        }
+                    }
+                    break;
+                    case CBN_EDITCHANGE: {
+                        COMBOBOXINFO info = { sizeof(COMBOBOXINFO) };
+                        GetComboBoxInfo(GetDlgItem(hwndDlg, IDC_SEARCH_INP), &info);
+                        char *inputBuffer;
+                        int inputLen = GetWindowTextLength(info.hwndItem);
+                        if (inputLen > 0) {
+                            //process!
+                            inputBuffer = (char*)GlobalAlloc(GPTR, inputLen + 1);
+                            GetWindowText(info.hwndItem, inputBuffer, inputLen);
+                            searchContact(inputBuffer, 3, &foundContacts, &contactsFound);
+                            ListView_DeleteAllItems(GetDlgItem(hwndDlg, IDC_FOUND_CONTACTS));
+                            if (contactsFound > 0) {
+                                InsertListViewItems(GetDlgItem(hwndDlg, IDC_FOUND_CONTACTS), contactsFound, 1);
+                                //clean earlier
+                                int numItems = SendDlgItemMessage(hwndDlg, IDC_SEARCH_INP, CB_GETCOUNT, (WPARAM)NULL, (LPARAM)NULL);
+                                for (int i = 0; i < numItems; i++) {
+                                    SendDlgItemMessage(hwndDlg, IDC_SEARCH_INP, CB_DELETESTRING, (WPARAM)0, (LPARAM)NULL);
+                                }
+
+                                for (int i = 0; i < contactsFound; i++) {
+                                    SendDlgItemMessage(hwndDlg, IDC_SEARCH_INP, CB_ADDSTRING, (WPARAM)NULL, (LPARAM)foundContacts[i].name);
+                                }
+                            }
+                            GlobalFree((HANDLE)inputBuffer);
+                        }
+                    }
+                    break;
                 }
-                else MessageBox(hwndDlg, "No contacts found!", "Result", 0);
-                GlobalFree((HANDLE)name);
             }
-            else MessageBox(hwndDlg, "Please enter values in the fields!", "Error", 0);
+                break;
         }
-            break;
-    }
     }
     break;
     case WM_NOTIFY: {

@@ -97,10 +97,22 @@ int searchContact(char *search, int searchParam, contact **foundContacts, unsign
             }
         }
     }
-    else {
+    else if (searchParam == 1) {
         //loop through numbers
         for (i = 0; i < numOfContacts; i++) {
             if (strcmp(contacts[i].number, search) == 0) {
+                //copy
+                strcpy((*foundContacts + *contactsFound)->name, contacts[i].name);
+                strcpy((*foundContacts + *contactsFound)->number, contacts[i].number);
+                (*contactsFound)++;
+                *foundContacts = (contact *)realloc(*foundContacts, (*contactsFound + 1) * sizeof(contact)); //increase size
+            }
+        }
+    }
+    else {
+        //filter
+        for (i = 0; i < numOfContacts; i++) {
+            if (strstr(contacts[i].name, search) != NULL || strstr(contacts[i].number, search) != NULL) {
                 //copy
                 strcpy((*foundContacts + *contactsFound)->name, contacts[i].name);
                 strcpy((*foundContacts + *contactsFound)->number, contacts[i].number);

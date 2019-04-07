@@ -5,7 +5,7 @@
 #include "manager.h"
 
 BOOL InsertListViewItems(HWND hWndListView, int cItems, int cSubItems);
-BOOL InitListViewColumns(HWND hWndListView);
+BOOL InitListViewColumns(HWND hWndListView, int numCol, int colNames);
 
 
 #endif // GUI_FUNCTIONS_H_INCLUDED

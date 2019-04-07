@@ -47,7 +47,7 @@ BOOL InsertListViewItems(HWND hWndListView, int cItems, int cSubItems)
 // InitListViewColumns: Adds columns to a list-view control.
 // hWndListView:        Handle to the list-view control.
 // Returns TRUE if successful, and FALSE otherwise.
-BOOL InitListViewColumns(HWND hWndListView)
+BOOL InitListViewColumns(HWND hWndListView, int numCol, int colNames)
 {
     WCHAR szText[256];     // Temporary buffer.
     LVCOLUMN lvc;
@@ -59,18 +59,18 @@ BOOL InitListViewColumns(HWND hWndListView)
     lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 
     // Add the columns.
-    for (iCol = 0; iCol < 3; iCol++)
+    for (iCol = 0; iCol < numCol; iCol++)
     {
         lvc.iSubItem = iCol;
         lvc.pszText = (LPSTR)szText;
         // Width of column in pixels.
-        if (iCol == 0) lvc.cx = 30;
+        if (colNames + iCol == IDS_FIRSTCOLUMN) lvc.cx = 30;
         else lvc.cx = 150;
         lvc.fmt = LVCFMT_LEFT;  // Left-aligned column.
 
         // Load the names of the column headings from the string resources.
         LoadString(NULL,
-                   IDS_FIRSTCOLUMN + iCol,
+                   colNames + iCol,
                    (LPSTR)szText,
                    sizeof(szText)/sizeof(szText[0]));
 

@@ -15,6 +15,7 @@
 #define IDS_FIRSTCOLUMN                         40000
 #define IDS_NAME                                40000
 #define ID_ADD                                  40000
+#define IDC_SEARCH_INP                          40001
 #define IDS_NUMBER                              40001
 #define IDS_SECONDCOLUMN                        40001
 #define ID_CONTACT_LIST                         40001

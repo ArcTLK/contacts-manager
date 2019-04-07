@@ -26,7 +26,7 @@ BOOL CALLBACK DlgMain(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     switch(uMsg) {
         case WM_INITDIALOG: {
             numOfContacts = readFromFile(&contacts);
-            InitListViewColumns(GetDlgItem(hwndDlg, ID_CONTACT_LIST));
+            InitListViewColumns(GetDlgItem(hwndDlg, ID_CONTACT_LIST), 3, IDS_FIRSTCOLUMN);
             InsertListViewItems(GetDlgItem(hwndDlg, ID_CONTACT_LIST), numOfContacts, 3);
         }
         break;
@@ -164,7 +164,9 @@ BOOL CALLBACK DlgCreation(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 BOOL CALLBACK DlgSearch(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     static contact *foundContacts;
     switch(uMsg) {
-    case WM_INITDIALOG: {}
+    case WM_INITDIALOG: {
+        InitListViewColumns(GetDlgItem(hwndDlg, IDC_FOUND_CONTACTS), 2, IDS_SECONDCOLUMN);
+    }
     break;
     case WM_CLOSE: {
         EndDialog(hwndDlg, 0);
@@ -183,7 +185,7 @@ BOOL CALLBACK DlgSearch(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                 searchContact(name, 0, &foundContacts, &contactsFound);
                 ListView_DeleteAllItems(GetDlgItem(hwndDlg, IDC_FOUND_CONTACTS));
                 if (contactsFound > 0) {
-                    InsertListViewItems(GetDlgItem(hwndDlg, IDC_FOUND_CONTACTS), contactsFound, 0);
+                    InsertListViewItems(GetDlgItem(hwndDlg, IDC_FOUND_CONTACTS), contactsFound, 1);
                 }
                 else MessageBox(hwndDlg, "No contacts found!", "Result", 0);
                 GlobalFree((HANDLE)name);
@@ -191,10 +193,7 @@ BOOL CALLBACK DlgSearch(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
             else MessageBox(hwndDlg, "Please enter values in the fields!", "Error", 0);
         }
             break;
-        case IDCANCEL:
-            PostMessage(hwndDlg, WM_CLOSE, 0, 0);
-            break;
-        }
+    }
     }
     break;
     case WM_NOTIFY: {
@@ -204,6 +203,9 @@ BOOL CALLBACK DlgSearch(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                     plvdi = (NMLVDISPINFO*)lParam;
                     switch (plvdi->item.iSubItem) {
                         case 0:
+                            plvdi->item.pszText = foundContacts[plvdi->item.iItem].name;
+                            break;
+                        case 1:
                             plvdi->item.pszText = foundContacts[plvdi->item.iItem].number;
                             break;
                         default:
@@ -350,11 +352,37 @@ BOOL CALLBACK DlgEdit(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     return TRUE;
 }
 BOOL CALLBACK DlgContact(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    static char localDIR[MAX_PATH] = "";
     switch(uMsg) {
     case WM_INITDIALOG: {
         if (lParam >= 0) { //array index must not be negative!
+            //set localDIR if not set
+            if (strcmp(localDIR, "") == 0) {
+                GetCurrentDirectory(sizeof(localDIR), localDIR);
+                strcat(localDIR, "\\");
+            }
             SetWindowText(GetDlgItem(hwndDlg, IDS_NAME), contacts[lParam].name);
             SetWindowText(GetDlgItem(hwndDlg, IDS_NUMBER), contacts[lParam].number);
+            //check if image file exists
+            FILE *file;
+            char fileName[MAX_PATH] = "";
+            strcpy(fileName, localDIR);
+            strcat(fileName, contacts[lParam].number);
+            strcat(fileName, ".bmp");
+            HBITMAP bm;
+            if ((file = fopen(fileName, "r")) != NULL) {
+                //file exists
+                fclose(file);
+                //load image
+                bm = (HBITMAP)LoadImage(NULL, fileName, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+            }
+            else {
+                //load default image
+                strcpy(fileName, localDIR);
+                strcat(fileName, "no-image.bmp");
+                bm = (HBITMAP)LoadImage(NULL, fileName, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+            }
+            SendDlgItemMessage(hwndDlg, IDC_PICTURE, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)bm);
         }
     }
     break;
@@ -370,7 +398,7 @@ BOOL CALLBACK DlgContact(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                 ZeroMemory(&ofn, sizeof(ofn));
                 char fileName[FILENAME_MAX] = "";
                 ofn.lStructSize = sizeof(ofn);
-                ofn.lpstrFilter = "JPG (*.jpg)\0*.jpg\0";
+                ofn.lpstrFilter = "Bitmap Image (*.bmp)\0*.bmp\0";
                 ofn.lpstrFile = fileName;
                 ofn.nMaxFile = MAX_PATH;
                 ofn.hwndOwner = hwndDlg;
@@ -378,11 +406,10 @@ BOOL CALLBACK DlgContact(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                 //making name for new file
                 char newFileName[MAX_PATH] = "";
                 char number[NUMBER_SIZE] = "";
-                GetCurrentDirectory(sizeof(newFileName), newFileName);
+                strcpy(newFileName, localDIR);
                 GetWindowText(GetDlgItem(hwndDlg, IDS_NUMBER), number, sizeof(number));
-                strcat(newFileName, "\\");
                 strcat(newFileName, number);
-                strcat(newFileName, ".jpg");
+                strcat(newFileName, ".bmp");
                 if (GetOpenFileName(&ofn) != 0) {
                     //copy image
                     FILE *source, *destination;
@@ -396,16 +423,23 @@ BOOL CALLBACK DlgContact(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                         fputc(fgetc(source), destination);
                     }
                     fclose(source);
+                    fclose(destination);
+                    //load image
+                    HBITMAP bm = (HBITMAP)LoadImage(NULL, newFileName, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+                    if (bm == NULL)
+                    {
+                        MessageBox(NULL, "Error loading image", "Error", 0);
+                        return TRUE;
+                    }
                     //set image
-                    SendDlgItemMessage(hwndDlg, IDC_PICTURE, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)destination);
-                    //fclose(destination);
+                    else SendDlgItemMessage(hwndDlg, IDC_PICTURE, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)bm);
+
                 }
                 else MessageBox(hwndDlg, "File not selected!", "Error", 0);
             }
                 break;
         }
     }
-    break;
     break;
     default:
         return FALSE;

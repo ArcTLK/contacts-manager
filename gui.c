@@ -139,7 +139,6 @@ BOOL CALLBACK DlgCreation(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
                 //create contact
                 errorId = createContact(name, number);
                 if (errorId == ERR_NAN) MessageBox(hwndDlg, "You must enter a numerical value in the number field!", "Error", 0);
-                else if (errorId == ERR_NUM_LENGTH_MISMATCH) MessageBox(hwndDlg, "The number must be of either 10 or 11 digits!", "Error", 0);
                 else if (errorId == ERR_DUPLICATE_CONTACT) MessageBox(hwndDlg, "A contact with the same number is present in the list!", "Error: Duplicate Number", 0);
                 else MessageBox(hwndDlg, "A contact has been created!", "Success", 0);
                 GlobalFree((HANDLE)name);
@@ -370,7 +369,6 @@ BOOL CALLBACK DlgEdit(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                     else if (result == ERR_INVALID_INDEX) MessageBox(hwndDlg, "Invalid ID!", "Error", 0);
                     else if (result == ERR_INVALID_PROPERTY) MessageBox(hwndDlg, "Invalid property passed!", "Error", 0);
                     else if (result == ERR_NAN) MessageBox(hwndDlg, "Number can only contain numerical values!", "Error", 0);
-                    else if (result == ERR_NUM_LENGTH_MISMATCH) MessageBox(hwndDlg, "Number can only contain 10 or 11 digits!", "Error", 0);
                     else if (result == ERR_DUPLICATE_CONTACT) MessageBox(hwndDlg, "A contact with the same number is present in the list!", "Error: Duplicate Number", 0);
                     else {
                         MessageBox(hwndDlg, "Contact has been edited successfully!", "Success", 0);

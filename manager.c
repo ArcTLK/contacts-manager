@@ -13,8 +13,6 @@ int validateNumber(char *number) {
         //not a number!
         if (!isdigit(number[i])) return ERR_NAN;
     }
-    //check if number < 10 or > 11
-    if (numLen < 10 || numLen > 11) return ERR_NUM_LENGTH_MISMATCH;
     //check if number is unique
     unsigned int contactsFound;
     contact *foundContacts;

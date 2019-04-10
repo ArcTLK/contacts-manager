@@ -76,7 +76,7 @@ BOOL CALLBACK DlgMain(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                     plvdi = (NMLVDISPINFO*)lParam;
                     switch (plvdi->item.iSubItem) {
                         case 0: {
-                            char text[50];
+                            char text[50] = "";
                             sprintf(text, "%d", plvdi->item.iItem + 1);
                             plvdi->item.pszText = text;
                         }
@@ -212,7 +212,7 @@ BOOL CALLBACK DlgSearch(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                         if (inputLen > 0) {
                             //process!
                             inputBuffer = (char*)GlobalAlloc(GPTR, inputLen + 1);
-                            GetWindowText(info.hwndItem, inputBuffer, inputLen);
+                            GetWindowText(info.hwndItem, inputBuffer, inputLen + 1);
                             searchContact(inputBuffer, 3, &foundContacts, &contactsFound);
                             ListView_DeleteAllItems(GetDlgItem(hwndDlg, IDC_FOUND_CONTACTS));
                             if (contactsFound > 0) {

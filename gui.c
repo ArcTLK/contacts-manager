@@ -93,13 +93,6 @@ BOOL CALLBACK DlgMain(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                     }
                 }
                 break;
-                case LVN_COLUMNCLICK: {
-                    LPNMLISTVIEW pnmv = (LPNMLISTVIEW)lParam;
-                    if (pnmv->iSubItem == 1) { //if column is name
-                        //Add sorting code
-                    }
-                }
-                break;
                 case NM_CLICK: {
                     LPNMITEMACTIVATE lpnmitem = (LPNMITEMACTIVATE)lParam;
                     if (lpnmitem->iItem != -1) { //check if click is on item

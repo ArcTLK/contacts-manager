@@ -6,7 +6,7 @@
 #include <commctrl.h>
 #include <richedit.h>
 #include "resource.h"
-
+#define SS_REALSIZECONTROL  0x00000040L
 
 
 

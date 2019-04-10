@@ -105,7 +105,7 @@ FONT 8, "Ms Shell Dlg"
     LTEXT           "Enter ID:", 0, 19, 14, 29, 9, SS_LEFT, WS_EX_LEFT
     LTEXT           "Enter Name:", 0, 19, 32, 40, 9, SS_LEFT, WS_EX_LEFT
     PUSHBUTTON      "Cancel", IDCANCEL, 114, 68, 50, 14, 0, WS_EX_LEFT
-    DEFPUSHBUTTON   "Edit", IDC_OK, 21, 68, 50, 14, WS_DISABLED, WS_EX_LEFT
+    DEFPUSHBUTTON   "Save Changes", IDC_OK, 21, 68, 60, 14, WS_DISABLED, WS_EX_LEFT
 }
 
 

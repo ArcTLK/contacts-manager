@@ -93,7 +93,6 @@ void editContactUI() {
     if ((c = strchr(input, '\n')) != NULL) *c = '\0';
     errorId = editContact(&index, option, input);
     if (errorId == ERR_NAN) puts("Number must be a numerical value!\n");
-    else if(errorId == ERR_NUM_LENGTH_MISMATCH) puts("Number must contain 10 or 11 digits!\n");
     else if (errorId == ERR_DUPLICATE_CONTACT) puts("A contact with the same number is present in the list!\n");
     else if (errorId == ERR_INVALID_PROPERTY) puts("Invalid property entered!\n");
     else if (errorId == ERR_INVALID_INDEX) puts("Invalid contact selected!\n");
@@ -143,7 +142,6 @@ void createContactUI() {
     //create contact
     errorId = createContact(name, number);
     if (errorId == ERR_NAN) puts("Number must be a numerical value!\n");
-    else if(errorId == ERR_NUM_LENGTH_MISMATCH) puts("Number must contain 10 or 11 digits!\n");
     else if (errorId == ERR_DUPLICATE_CONTACT) puts("A contact with the same number is present in the list!\n");
     else puts("Contact has been created!\n");
 }
